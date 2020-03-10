@@ -28,15 +28,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.
                 csrf()
-                .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
-                /*.and().rememberMe().alwaysRemember(true)
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
+                .csrfTokenRepository(new CookieCsrfTokenRepository()) // for cookie = csrf SPA for POST PUT DELETE  not GET
+              /*  .and().rememberMe().alwaysRemember(true) // cookies for browser
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/ //backend stateless
                 .and()
                 .authorizeRequests().anyRequest().authenticated().and().httpBasic();
 
         //base class: CsrfTokenRepository
         //HttpSessionCsrfTokenRepository
         //CookieCsrfTokenRepository
+
+        //if server is stateless, server will not sent session cookies but can sent remember me. Each request to server will be authenticated
+        //with remember me. Not needed to login every time. client will manage session in this case.
+        // In each request client can sent token for api call.(only remember me can be manage by the server)
+
+        //if server is stateful session and remember me cookie injected to browser. The client session and remember me can
+        // be handled by server.(in this case remember me and session manage by server)
 
 
     }
